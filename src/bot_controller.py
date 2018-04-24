@@ -210,7 +210,7 @@ class BotController:
     def update_current_target_waypoint(self, current_waypoint):
         """update a shared file to inform rainbow about current waypoint"""
         with open(current_target_waypoint, "w+") as file:
-            file.write(current_waypoint)
+            file.write("target: \"%s\"" %current_waypoint)
 
     def adapt(self, adaptation_level):
         """adaptation factory"""
