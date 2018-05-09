@@ -66,12 +66,13 @@ class RainbowInterface:
         print ("Configuring rainbow for %s"%challenge_problem)
         os.environ["LD_LIBRARY_PATH"] = os.environ["LD_LIBRARY_PATH"] + ":" + os.path.expanduser("~/das/prism-4.3.1-linux64/lib")
         print ("LD_LIBRARY_PATH=%s" %os.environ["LD_LIBRARY_PATH"])
+	rainbow_sleep = os.environ["RAINBOW_WAIT_TIME"]
         self.target = self.getTarget(challenge_problem)
         if (self.target is not None):
             time.sleep(10)
             print("Starting %s/run-oracle.sh %s"%(RAINBOW_PATH,self.target))
             subprocess.Popen([RAINBOW_PATH+"/run-oracle.sh", "-h", "-w", RAINBOW_PATH, self.target], stdout=log)
-            time.sleep(40)
+            time.sleep(int(rainbow_sleep))
 
 
     def stopRainbow(self):
