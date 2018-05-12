@@ -7,6 +7,7 @@ import threading
 
 RAINBOW_PATH = os.path.expanduser('~/das/rainbow-brass')
 
+
 class Command(object):
     def __init__(self, cmd):
         self.cmd = cmd
@@ -28,8 +29,9 @@ class Command(object):
         return self.process.returncode
 
 
+# Class to manage interaction with Rainbow
+
 class RainbowInterface:
-	# Class to manage interaction with Rainbow
 
     def __init__(self):
         self.processStarted = False
@@ -50,7 +52,7 @@ class RainbowInterface:
                 rospy.logerr("Trying to start Rainbow when Rainbow is already running.")
             self.processStarted = True
 
-        if (self.target is None):
+        if self.target is None:
             return True
         rospy.loginfo("Starting Rainbow (DAS)...")
         command = Command([RAINBOW_PATH+"/brass.sh", "-w", RAINBOW_PATH, "-s", self.target, os.path.expanduser("~/rainbow-start.log")])
@@ -63,18 +65,17 @@ class RainbowInterface:
         Starts Rainbow process. Needs to (a) start in background, (b) wait some time until it is up
         """
 
-        print ("Configuring rainbow for %s"%challenge_problem)
+        print("Configuring rainbow for %s"%challenge_problem)
         os.environ["LD_LIBRARY_PATH"] = os.environ["LD_LIBRARY_PATH"] + ":" + os.path.expanduser("~/das/prism-4.3.1-linux64/lib")
         print ("LD_LIBRARY_PATH=%s" %os.environ["LD_LIBRARY_PATH"])
 	rainbow_sleep = os.environ["RAINBOW_WAIT_TIME"]
 	print("Will wait %s seconds for Rainbow to come up")
         self.target = self.getTarget(challenge_problem)
-        if (self.target is not None):
+        if self.target is not None:
             time.sleep(10)
             print("Starting %s/run-oracle.sh %s"%(RAINBOW_PATH,self.target))
             subprocess.Popen([RAINBOW_PATH+"/run-oracle.sh", "-d", "-h", "-w", RAINBOW_PATH, self.target], stdout=log)
             time.sleep(120)
-
 
     def stopRainbow(self):
         rospy.loginfo("Stopping Rainbow (DAS)...")
