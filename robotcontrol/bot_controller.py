@@ -262,13 +262,16 @@ class BotController:
 
         return number_of_tasks_accomplished, locs
 
-    def go_instructions_multiple_tasks_adaptive(self, start, targets, active_cb=None, done_cb=None, at_waypoint_cb=None, mission_done_cb=None):
+    def go_instructions_multiple_tasks_adaptive(self, start, targets, active_cb=None, done_cb=None, at_waypoint_cb=None, mission_done_cb=None, online_learner_cb=None):
         """this is for baseline c where the adaptation will be taken care of with Rainbow"""
 
         rospy.loginfo("Adaptive robot started the mission!")
 
         number_of_tasks_accomplished = 0
         locs = []
+
+        if online_learner_cb is not None:
+            online_learning_count = 1
 
         for target in targets:
             rospy.loginfo("Starting a new task to get to: {}".format(target))
@@ -306,6 +309,11 @@ class BotController:
                 number_of_tasks_accomplished += 1
             else:
                 rospy.logwarn("The task ({0}->{1}) has been failed".format(current_start, target))
+
+            # trigger online learning after every task except the last task 
+            if online_learner_cb is not None and online_learning_count < len(targets):
+                onlineLearner(online_learning_count)
+                online_learning_count += 1
 
         if mission_done_cb is not None:
             mission_done_cb(number_of_tasks_accomplished, locs)
