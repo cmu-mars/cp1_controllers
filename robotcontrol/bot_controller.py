@@ -310,9 +310,9 @@ class BotController:
             else:
                 rospy.logwarn("The task ({0}->{1}) has been failed".format(current_start, target))
 
-            # trigger online learning after every task except the last task 
+            # trigger online learning after every task except the last task
             if online_learner_cb is not None and online_learning_count < len(targets):
-                onlineLearner(online_learning_count)
+                online_learner_cb(online_learning_count)
                 online_learning_count += 1
 
         if mission_done_cb is not None:
