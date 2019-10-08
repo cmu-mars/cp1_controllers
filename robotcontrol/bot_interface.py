@@ -252,16 +252,21 @@ class ControlInterface:
         except rospy.ServiceException as e:
             rospy.logerr("Could not set the position of the bot")
             rospy.logerr(e.message)
-
+    
+    bot_log = 0
+    
     def get_bot_state(self):
 
         try:
-            rospy.loginfo("A query to observe the current state of the robot has been issued")
+            if self.bot_log % 10 == 0:
+                rospy.loginfo("A query to observe the current state of the robot has been issued")
             tp = self.get_model_state('mobile_base', '')
             quat = (tp.pose.orientation.x, tp.pose.orientation.y, tp.pose.orientation.z, tp.pose.orientation.w)
             (roll, pitch, yaw) = euler_from_quaternion(quat)
             v = math.sqrt(tp.twist.linear.x**2 + tp.twist.linear.y**2)
-            rospy.loginfo("The robot is at: x={0}, y={1}, yaw={2}, v={3}".format(tp.pose.position.x, tp.pose.position.y, yaw, v))
+            if self.bot_log % 10 == 0:
+                rospy.loginfo("The robot is at: x={0}, y={1}, yaw={2}, v={3}".format(tp.pose.position.x, tp.pose.position.y, yaw, v))
+            self.bot_log += 1
             return tp.pose.position.x, tp.pose.position.y, yaw, v
 
         except rospy.ServiceException as se:
