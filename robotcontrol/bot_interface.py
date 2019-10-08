@@ -194,7 +194,7 @@ class ControlInterface:
         success = self.ig_client.wait_for_result(rospy.Duration.from_sec(max_waiting_time))
 
         state = self.ig_client.get_state()
-
+        print("%s" %self.ig_client.get_result())
         if success and self.ig_client.get_result().succeeded and state == GoalStatus.SUCCEEDED:
             rospy.loginfo("Successfully executed the instructions and reached the destination")
             return True
