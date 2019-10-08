@@ -179,7 +179,7 @@ class ControlInterface:
             success = self.ig_client.wait_for_result(rospy.Duration.from_sec(max_waiting_time))
 
             state = self.ig_client.get_state()
-            if success and self.ig_client.get_result().succeeded and state == GoalStatus.SUCCEEDED:
+            if success and "succeeded" in self.ig_client.get_result().sequence and state == GoalStatus.SUCCEEDED:
                 rospy.loginfo("Successfully executed the instructions and reached the destination")
                 return True
             else:
@@ -194,8 +194,7 @@ class ControlInterface:
         success = self.ig_client.wait_for_result(rospy.Duration.from_sec(max_waiting_time))
 
         state = self.ig_client.get_state()
-        print("%s --> %s" %(self.ig_client.get_result(),self.ig_client.get_result().sequence))
-        if success and self.ig_client.get_result().succeeded and state == GoalStatus.SUCCEEDED:
+        if success and "succeeded" in self.ig_client.get_result().sequence and state == GoalStatus.SUCCEEDED:
             rospy.loginfo("Successfully executed the instructions and reached the destination")
             return True
         else:
